@@ -1,0 +1,206 @@
+@import "mixin.scss";
+.wrap-popup{
+    height: calc(100vh - 50px);
+    position: fixed;
+    width: calc(100vw - 300px);
+    top: 50%;
+    left: 50%;
+    transform: scale(0.7);
+    margin-left: calc((100vw - 300px) / -2);
+    margin-top: calc((100vh - 50px) / -2);
+    z-index: 9999999;
+    transition: all 0.2s;
+    opacity: 0;
+    visibility: hidden;
+    border-radius: 15px;
+    overflow: hidden;
+    @include mediaMaxWidth(1200px){
+        width: calc(100vw - 30px);
+        margin-left: calc((100vw - 30px) / -2);
+        height: calc(100vh - 30px);
+        margin-top: calc((100vh - 30px) / -2);
+    }
+    @include  mediaMaxWidth(768px){
+        overflow: auto;
+    }
+    &.active{
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+    }
+    .header-popup{
+        display: flex;
+        flex-wrap: wrap;
+        height: 50px;
+        align-items: center;
+        position: relative;
+        @include mediaMaxWidth(768px){
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            padding-right: 39px;
+        }
+        @include mediaMaxWidth(480px){
+            padding-right: 45px;
+        }
+        &__left{
+            width: 30%;
+            padding-left: 20px;
+            @include mediaMaxWidth(768px){
+                width: 200px;
+            }
+            @include mediaMaxWidth(480px){
+                display: none;
+            }
+        }
+        &__right{
+            left: 70%;
+            @include mediaMaxWidth(768px){
+                width: calc(100% - 200px);
+            }
+            @include mediaMaxWidth(480px){
+                width: 100%;
+                padding-left: 10px;
+            }
+        }
+        .close-popup{
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            @include mediaMaxWidth(768px){
+                border-radius: 4px;
+                display: flex;
+                background: rgb(255, 255, 255);
+                top: 25px;
+                right: 5px;
+            }
+            @include mediaMaxWidth(480px){
+                right: 10px;
+            }
+            svg{
+                color: #fff;
+                @include mediaMaxWidth(768px){
+                    color: black;
+                }
+            }
+        }
+    }
+    .popup-main{
+        display: flex;
+        flex-wrap: wrap;
+        &__left{
+            width: 30%;
+            @include mediaMaxWidth(768px){
+                width: 100%;
+            }
+            .popup-main__title{
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 42px;
+                margin: 10px 10px 0;
+                @include mediaMaxWidth(768px){
+                    height: 35px;
+                }
+            }
+            .wrap-filter{
+                height: calc(100vh - 100px - 72px);
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 30px 10px 10px;
+                margin-right: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                @include mediaMaxWidth(768px){
+                    height: auto;
+                    padding: 10px;
+                    margin: 10px 0;
+                }
+                .popup-main__filter{
+                    .p-filter-item{
+                        margin-bottom: 25px;
+                        border-bottom: solid 1px #c1c1c1;
+                        padding-bottom: 10px;
+                        .title-fiter{
+                            font-weight: 700;
+                            width: max-content;
+                            text-transform: uppercase;
+                            margin-bottom: 7px;
+                        }
+                    }
+                }
+                .close-find{
+                    display: none;
+                    @include mediaMaxWidth(768px){
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+        &__right{
+            width: 70%;
+            @include mediaMaxWidth(768px){
+                width: 100%;
+            }
+            .wrap-pagination{
+                display: flex;
+                justify-content: flex-end;
+            }
+            .list-product{
+                height: calc(100vh - 100px - 72px);
+                overflow: auto;
+                margin: 10px 10px 10px 0;
+                @include mediaMaxWidth(768px){
+                    height: calc(100vh - 147px - 30px);
+                    margin: 0px 10px 0px 0px;
+                }
+                .pick-product{
+                    display: flex;
+                    flex-wrap: wrap;
+                    padding: 20px;
+                    border-bottom: solid 1px #c1c1c1;
+                    .img-pd{
+                        width: 130px;
+                        img{
+                            display: block;
+                            width: 100%;
+                            height: auto;
+                        }
+                    }
+                    .text-pd{
+                        width: calc(100% - 130px - 232px);
+                        padding: 0 20px;
+                        @include mediaMaxWidth(1024px){
+                            width: calc(100% - 130px);
+                            padding: 0 15px;
+                        }
+                        .pd-name{
+                            margin-bottom: 15px;
+                        }
+                        .pd-price{
+                            font-size: 21px;
+                            margin-top: 10px;
+                        }
+                    }
+                    .add-product{
+                        width: 232px;
+                        @include mediaMaxWidth(1024px){
+                            margin-top: 5px;
+                            margin-left: 145px;
+                        }
+                        @include mediaMaxWidth(480px){
+                            margin-left: 0;
+                            width: auto;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

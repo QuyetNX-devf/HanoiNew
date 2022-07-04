@@ -1,0 +1,167 @@
+@import "mixin.scss";
+.main-page{
+    .blur-build{
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        z-index: 9999999;
+        top: 0;
+        left: 0;
+        background: #00000067;
+        transition: all 0.2s;
+        opacity: 0;
+        visibility: hidden;
+        &.active{
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+    .title-builpc{
+        margin: 35px 0 20px;
+        padding-bottom: 20px;
+        border-bottom: solid 1px #c1c1c1;
+        @include mediaMaxWidth(480px){
+            margin: 21px 0 20px;
+            padding-bottom: 8px;
+            h5{
+                font-size: 16px;
+            }
+        }
+    }
+    .wrap-pick-product{
+        // background: #fff;
+        border-radius: 10px;
+        .item-category{
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: solid 1px #c1c1c1;
+            &:last-child{
+                border-bottom: none;
+            }
+            .left-name{
+                padding: 10px 10px 10px 20px;
+                width: 350px;
+                border-right: solid 1px #c1c1c1;
+                @include mediaMaxWidth(1024px){
+                    width: 250px;
+                }
+                @include mediaMaxWidth(768px){
+                    width: 150px;
+                    padding: 10px;
+                }
+                @include mediaMaxWidth(480px){
+                    width: 120px;
+                }
+                .left-name-category{
+                    font-size: 17px;
+                    font-weight: 500;
+                    @include mediaMaxWidth(1200px){
+                        font-size: 14px;
+                    }
+                }
+            }
+            .right-pick{
+                padding: 10px 20px;
+                width: calc(100% - 350px);
+                @include mediaMaxWidth(1024px){
+                    width: calc(100% - 250px);
+                }
+                @include mediaMaxWidth(768px){
+                    width: calc(100% - 150px);
+                    padding: 10px;
+                }
+                @include mediaMaxWidth(480px){
+                    width: calc(100% - 120px);
+                }
+                .wrap-product-pick{
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    @include mediaMaxWidth(1024px){
+                        display: block;
+                        overflow: hidden;
+                    }
+                    .img-pd{
+                        width: 100px;
+                        @include mediaMaxWidth(1024px){
+                            margin-bottom: 10px
+                        };
+                        img{
+                            display: block;
+                            width: 100%;
+                            height: auto;
+                        }
+                    }
+                    .infpo-pd{
+                        width: 50%;
+                        @include mediaMaxWidth(1024px){
+                            width: 100%;
+                            margin-bottom: 10px;
+                        }
+                        .pd-name{
+                            margin-bottom: 10px;
+                            @include mediaMaxWidth(1024px){
+                                margin-bottom: 5px;
+                            }
+                        }
+                    }
+                    .price-pd{
+                        width: 80px;
+                        @include mediaMaxWidth(1024px){
+                            float: left;
+                            margin-top: 4px;
+                            width: auto;
+                            margin-right: 5px;
+                        }
+                        &.red{
+                            color: red;
+                        }
+                    }
+                    .x-pd{
+                        @include mediaMaxWidth(1024px){
+                            float: left;
+                        }
+                        &.red{
+                            color: #fd0000;
+                        }
+                        input{
+                            display: block;
+                            width: 50px;
+                            height: 30px;
+                            text-align: center;
+                            @include mediaMaxWidth(1024px){
+                                width: 40px;
+                                height: 25px;
+                            }
+                        }
+                    }
+                    .sm{
+                        @include mediaMaxWidth(1024px){
+                            margin-top: 4px;
+                            margin-right: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .text-total-price-build{
+        border-top: solid 1px #c1c1c1;
+        margin-top: 20px;
+        padding: 15px 0;
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column;
+        align-items: flex-end;
+        .text-price{
+            margin-bottom: 5px;
+            span{
+                color: #fd0000;
+            }
+        }
+    }
+    .btn-buld{
+        display: flex;
+        justify-content: flex-end;
+    }
+}

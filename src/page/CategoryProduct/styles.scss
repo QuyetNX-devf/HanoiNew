@@ -1,0 +1,112 @@
+@import "mixin.scss";
+.Main-category{
+    .wrap-left{
+        padding: 10px;
+        position: sticky;
+        top: 10px;
+        border-radius: 10px;
+        .p-filter-item{
+            margin-top: 20px;
+            @include mediaMaxWidth(1024px){
+                margin-top: 18px;
+            }
+            .title-fiter{
+                font-weight: 700;
+                width: max-content;
+                text-transform: uppercase;
+                margin-bottom: 7px;
+            }
+            .p-filter-list-value{
+                padding-left: 15px;
+                a{
+                    display: block;
+                    margin-bottom: 5px;
+                }
+            }
+        }
+        .Swiper-banner-category{
+            @include mediaMaxWidth(1024px){
+                margin-bottom: 25px;
+            }
+        }
+        .title-filter-label{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 5px;
+            @include mediaMaxWidth(1024px){
+                padding-bottom: 10px;
+            }
+            .text-title{
+                display: flex;
+                align-items: center;
+                .icon-filter{
+                    display: none;
+                    @include mediaMaxWidth(1024px){
+                        display: flex;
+                    }
+                }
+            }
+            .icon-more{
+                display: none;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s;
+                transform: rotate(0deg);
+                &.active{
+                    transform: rotate(-90deg);
+                }
+                @include mediaMaxWidth(1024px){
+                    display: flex;
+                }
+            }
+        }
+    }
+    .wrap-right{
+        .Swiper-banner-category{
+            margin-bottom: 15px;
+            
+        }
+    }
+}
+
+.more_ {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    margin-top: -8px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 10px 0;
+}
+.Wrap-ct-detail{
+    position: relative;
+    overflow: hidden;
+    padding: 25px 10px 0;
+    background: #fff;
+    margin-top: 15px;
+    &.js-hidden-content {
+        height: 500px;
+        &::after{
+            content: "";
+            background: linear-gradient(rgba(255, 255, 255, 0), white);
+            height: 100px;
+            display: block;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+    }
+}
+
+.wraper-category-pagination{
+    .wrap-pagination{
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 15px;
+    }
+}

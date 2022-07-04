@@ -1,0 +1,91 @@
+@import "mixin.scss";
+footer{
+    .link-label{
+        margin-bottom: 12px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        color: #fff;
+        .icon{
+            height: max-content;
+            margin-right: 10px;
+            svg{
+                width: 20px;
+            }
+        }
+    }
+    .footer-top{
+        .left{
+            @include mediaMaxWidth(768px){
+                margin-bottom: 10px;
+            }
+        }
+    }
+    .footer-center{
+        .col-item{
+            @include mediaMaxWidth(768px){
+                border-bottom: solid 1px #c1c1c1 ;
+            }
+            .title-wrap{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .icon-show{
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    display: none;
+                    transition: all 0.2s;
+                    &.active{
+                        transform: rotate(90deg);
+                    }
+                    @include mediaMaxWidth(768px){
+                        display: flex;
+                    }
+                    svg{
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+            }
+            .title{
+                text-transform: uppercase;
+                margin-bottom: 15px;
+                font-weight: 500;
+                font-size: 18px;
+                @include mediaMaxWidth(768px){
+                    padding: 10px 0;
+                    margin-bottom: 0;
+                    font-size: 15px;
+                }
+            }
+            .link-label{
+                color: #222;
+            }
+        }
+    }
+    .footer-bot{
+        padding: 22px 0 22px;
+        .col-item{
+            .title{
+                text-transform: uppercase;
+                font-weight: bold;
+                font-size: 16px;
+                margin-bottom: 15px;
+                @include mediaMaxWidth(480px){
+                    font-size: 14px;
+                }
+            }
+            .description{
+                color: #fff;
+                line-height: 30px;
+            }
+            .img-bct{
+                margin-top: 15px;
+            }
+            
+        }
+    }
+}

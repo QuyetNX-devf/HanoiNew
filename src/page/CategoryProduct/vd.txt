@@ -1,0 +1,60 @@
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
+import { Typography } from '@mui/material';
+const marks = [
+  {
+    value: 0,
+    label: '0',
+  },
+  {
+    value: 5000000,
+    label: '5tr',
+  },
+  {
+    value: 15000000,
+    label: '15tr',
+  },
+];
+
+function Valuetext({value}) {
+  return(
+    <>
+    {value.map((item, index)=>(
+      <Box key={index}>{item}VNĐ</Box>
+    ))}
+    </>
+  )
+}
+
+export default function RangeSlider() {
+  const [value, setValue] = React.useState([0, 20000000]);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+
+  return (
+    <>
+    <Box>
+      <Valuetext value={value} />
+    </Box>
+    <Box sx={{ width: 300, padding: "40px 20px" }}>
+      <Slider
+        getAriaLabel={() => ""}
+        value={value}
+        step={100000}
+        defaultValue={80}
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        marks={marks}
+        max={20000000}
+        // valueLabelDisplay="on"
+        // getAriaValueText={valuetext}
+        // valueLabelFormat={valuetext}
+      />
+    </Box>
+    </>
+  );
+}

@@ -1,0 +1,223 @@
+@import "mixin.scss";
+.header-mobile{
+    position: sticky;
+    top: 0;
+    right: 0;
+    z-index: 9999999;
+    .text-white{
+        color: #fff;
+    }
+    .wrap-ct{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        height: 63px;
+        align-items: center;
+        .btn-bar{
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            display: flex;
+            
+        }
+        .logo-mb{
+            a{
+                display: block;
+                img{
+                    display: block;
+                    width: 110px;
+                    height: auto;
+                }
+            }
+        }
+        .top-right-mb{
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            width: 100px;
+            justify-content: space-between;
+        }
+        .customer{
+            position: relative;
+            .menu-popup{
+                position: absolute;
+                top: calc(100% + 30px);
+                right: 0;
+                background: #fff;
+                width: 120px;
+                padding: 5px;
+                border-radius: 5px;
+                box-shadow: 0 0 5px #00000087;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.2s;
+                &.active{
+                    opacity: 1;
+                    visibility: visible;
+                    top: calc(100% + 5px);
+                }
+                a{
+                    display: block;
+                    transition: all 0.2s;
+                    padding: 5px;
+                    &:hover{
+                        background: #155aa4;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+    .blur-mb{
+        position: fixed;
+        top: 63px;
+        left: 0;
+        background: rgba(0, 0, 0, 0);
+        width: 100%;
+        height: calc(100vh - 63px);
+        backdrop-filter: blur(6px);
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.2s;
+        &.active{
+            background: rgba(0, 0, 0, 0.83);
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+    .box-search-mobile{
+        position: fixed;
+        top: 63px;
+        width: 100%;
+        left: 0;
+        height: calc(100vh - 63px);
+        z-index: 99999999;
+        visibility: hidden;
+        &.active{
+            visibility: visible;
+            .wrap-popup-search{
+                opacity: 1;
+                visibility: visible;
+                padding-top: 30px;
+            }
+        }
+        .wrap-popup-search{
+            max-width: 560px;
+            padding: 30px 15px 0;
+            padding-top: 70px;
+            margin: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            .group-ip{
+                position: relative;
+                .ip-search{
+                    display: block;
+                    border: none;
+                    outline: 0;
+                    height: 30px;
+                    width: 100%;
+                    border-radius: 5px;
+                    padding: 0 15px 0 43px;
+                }
+                .icon-search{
+                    position: absolute;
+                    top: 2px;
+                    left: 10px;
+                }
+            }
+        }
+    }
+    .sidebar-mb{
+        position: fixed;
+        top: 63px;
+        left: 0;
+        height: calc(100% - 63px);
+        width: 450px;
+        padding: 30px 15px;
+        z-index: 999991;
+        transform: translateX(-100%);
+        transition: all 0.2s;
+        @include mediaMaxWidth(480px){
+            width: 320px;
+            padding: 12px 10px;
+        }
+        &.active-show{
+            transform: translateX(0);
+        }
+        .item-single{
+            display: flex;
+            align-items: center;
+            height: 55px;
+            p{
+                font-weight: 500;
+
+            }
+            svg{
+                width: 27px;
+                margin-right: 15px;
+                color: #155aa4;
+            }
+            &.item-category{
+                border-top: solid 1px #c1c1c1;
+                border-bottom: solid 1px #c1c1c1;
+            }
+        }
+        .sidebar__wrap{
+            overflow-y: auto;
+            height: 100%;
+        }
+        .group-menu{
+            padding: 0 15px;
+            @include mediaMaxWidth(480px){
+                padding: 0 10px;
+            }
+            .wrap-lv1{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: solid 1px #c1c1c1;
+                min-height: 35px;
+                .icon-show{
+                    display: flex;
+                    width: 27px;
+                    height: 27px;
+                    justify-content: center;
+                    align-items: center;
+                    transition: all 0.2s;
+                    &.active{
+                        transform: rotate(90deg);
+                    }
+                    svg{
+                        width: 15px;
+                        height: 15px;
+                    }
+                }
+            }
+            .wrap-detail{
+                padding: 0 0px 0 10px;
+            }
+        }
+    }
+    .blur-bg-sidebar{
+        background: rgba(0, 0, 0, 0.712);
+        position: fixed;
+        top: 63px;
+        height: calc(100vh - 63px);
+        left: 0;
+        z-index: 99999;
+        width: 100%;
+        backdrop-filter: blur(2px);
+        transition: all 0.2s;
+        opacity: 0;
+        visibility: hidden;
+        &.active{
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}

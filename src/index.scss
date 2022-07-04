@@ -1,0 +1,119 @@
+
+
+// @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+@mixin mediaMaxWidth($breakpoints) {
+  @media only screen and (max-width: $breakpoints) {
+      @content;
+  }
+}
+
+* {
+  outline: none;
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+a {
+  text-decoration: none !important;
+  color: #222222;
+  &:active{
+      text-decoration: none;
+  }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+ul,li {
+    list-style-type: none;
+    margin: 0;
+}
+
+ul {
+    padding-left: 0;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+body {
+    // font-family: 'Roboto', sans-serif;
+    background: #f1f1f1;
+    font-weight: 400;
+    line-height: 1.5;
+    font-size: 14px;
+    margin: 0;
+    color: #222222;
+}
+
+/* CAUTION: Internet Explorer hackery ahead */
+
+
+select::-ms-expand {
+    display: none; /* Remove default arrow in Internet Explorer 10 and 11 */
+}
+
+#root {
+  // font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.wrap-label{
+  max-width: 1650px;
+  margin: auto;
+  padding: 0 10px;
+  @include mediaMaxWidth(1650px){
+    max-width: 1440px;
+  }
+  @include mediaMaxWidth(1440px){
+      max-width: 1200px;
+  }
+  @include mediaMaxWidth(1200px){
+      max-width: 100%;
+      padding: 0 30px;
+  }
+  @include mediaMaxWidth(768px){
+      padding: 0 15px;
+  }
+  @include mediaMaxWidth(480px){
+      padding: 0 10px;
+  }
+}
+
+.custom-scroll-bar{
+  &::-webkit-scrollbar {
+      width: 7px;
+      background-color: #F5F5F5;
+  }
+  &::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background: rgba(0,0,0,0.1);
+  }
+  &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      border: 1px solid #aaa;
+  }
+  &::-webkit-scrollbar {
+      display: block !important;
+  }
+}
+
+
+
