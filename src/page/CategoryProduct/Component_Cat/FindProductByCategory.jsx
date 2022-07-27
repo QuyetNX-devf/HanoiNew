@@ -17,7 +17,7 @@ export default function FindProductByCategory({ categoryId }) {
     ).isCategory;
 
     setCategory(isCategory);
-  }, [categoryId]);
+  }, [categoryId, dataCategoryProduct]);
   return (
     <Box className="p-filter-item">
       {category && (

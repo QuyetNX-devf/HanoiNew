@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function SortPrice(props) {
   let navigate = useNavigate();
-  const { maxPrice, minPrice, sttSort } = props;
+  const { maxPrice, minPrice, sttSort, keySearch } = props;
 
   let sttCheckBox = [];
   const handleSortPrice = (value) => {
@@ -13,7 +13,7 @@ export default function SortPrice(props) {
       navigate(
         `?${minPrice !== null ? "min=" + minPrice : ""}${
           maxPrice !== null ? "&max=" + maxPrice : ""
-        }`,
+        }${keySearch ? "&q=" + keySearch : ""}`,
         {
           replace: true,
         }
@@ -22,7 +22,7 @@ export default function SortPrice(props) {
       navigate(
         `?${minPrice !== null ? "min=" + minPrice : ""}${
           maxPrice !== null ? "&max=" + maxPrice : ""
-        }&sort=price-asc`,
+        }${keySearch ? "&q=" + keySearch : ""}&sort=price-asc`,
         {
           replace: true,
         }
@@ -33,7 +33,7 @@ export default function SortPrice(props) {
       navigate(
         `?${minPrice !== null ? "min=" + minPrice : ""}${
           maxPrice !== null ? "&max=" + maxPrice : ""
-        }`,
+        }${keySearch ? "&q=" + keySearch : ""}`,
         {
           replace: true,
         }
@@ -42,7 +42,7 @@ export default function SortPrice(props) {
       navigate(
         `?${minPrice !== null ? "min=" + minPrice : ""}${
           maxPrice !== null ? "&max=" + maxPrice : ""
-        }&sort=price-desc`,
+        }${keySearch ? "&q=" + keySearch : ""}&sort=price-desc`,
         {
           replace: true,
         }

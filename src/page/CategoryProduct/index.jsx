@@ -36,6 +36,8 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import styled from "@emotion/styled";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useQuery } from "react-query";
+import { getProducts } from "contants/api";
 
 const useStyles = makeStyles((theme) => ({
   wrapLeft: {
@@ -59,8 +61,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
   },
   noProduct: {
-    background: "#fff",
+    background: theme.backgroundColor.blackWhite,
     padding: "50px 0",
+    marginTop: "15px",
   },
 }));
 
@@ -99,11 +102,6 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function CategoryProduct() {
   const isSmallerScreen = useMediaQuery("(max-width: 1024px)");
   const { categoryId } = useParams();
-  const navigate = useNavigate();
-  const dataCategoryProduct = useSelector((state) => state.categoryProducts);
-  const dataProduct = useSelector((state) => state.product);
-  const dataBanner = useSelector((state) => state.banner).banner_category;
-  const dataArticle = useSelector((state) => state.article);
 
   const [expanded, setExpanded] = useState(false);
   const handleChangePanel = (value) => {
@@ -111,9 +109,6 @@ export default function CategoryProduct() {
   };
 
   // const BannerCategory = _.filter()
-  const listBanner = _.filter(dataBanner, {
-    categoryInfo: [{ id: categoryId }],
-  });
 
   let params = new URL(document.location).searchParams;
   let maxPrice = params.get("max");
@@ -121,44 +116,40 @@ export default function CategoryProduct() {
   let sttSort = params.get("sort");
   let propsLabel = { maxPrice, minPrice, sttSort };
 
-  // check id category
-  useEffect(() => {
-    const { isCategory } = getCategory(dataCategoryProduct, categoryId);
-    if (!isCategory) {
-      navigate("/");
-    }
-  }, [categoryId]);
-
-  const [products, setProducts] = useState([]);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 15,
   });
 
   const [totalPage, setTotalPage] = useState(0);
-
   const [minMaxPrice, setMinMaxPrice] = useState({ min: 0, max: 0 });
 
-  useEffect(() => {
-    const getProduct = sortPrice({
-      maxPrice,
-      minPrice,
-      sttSort,
-      minMaxPrice: true,
-      listProduct: dataProduct,
-      page: pagination.page,
-      limit: pagination.limit,
-      categoryId: categoryId,
-    });
-    setMinMaxPrice({
-      min: getProduct.minMaxPrice.min,
-      max: getProduct.minMaxPrice.max,
-    });
-    setProducts(getProduct.data);
-    setTotalPage((prev) => {
-      return Math.ceil(getProduct.total / pagination.limit);
-    });
-  }, [pagination, maxPrice, minPrice, sttSort, categoryId]);
+  const [sortPage, setSortpage] = useState({
+    page: 1,
+    limit: 15,
+    totalPage: 0,
+    minMaxPrice: {
+      min: 0,
+      max: 0,
+    },
+  });
+
+  const paramsApi = {
+    maxPrice,
+    minPrice,
+    sttSort,
+    categoryId,
+    minMaxPrice: true,
+    limit: pagination.limit,
+    page: pagination.page,
+  };
+
+  const { data, error, isLoading, isFetching } = useQuery({
+    queryKey: ["/products", paramsApi],
+    queryFn: getProducts,
+    keepPreviousData: true,
+    retry: false,
+  });
 
   const handleChangePage = (page) => {
     setPagination((prev) => {
@@ -168,7 +159,16 @@ export default function CategoryProduct() {
       };
     });
   };
-
+  useEffect(() => {
+    if (data) {
+      setTotalPage((prev) => {
+        return Math.ceil(data.total / pagination.limit);
+      });
+      if (data.minMaxPrice) {
+        setMinMaxPrice(data.minMaxPrice);
+      }
+    }
+  }, [data?.total]);
   useEffect(() => {
     setPagination((prev) => {
       return {
@@ -182,7 +182,15 @@ export default function CategoryProduct() {
 
   return (
     <>
-      {products.length > 0 ? (
+      {error ? (
+        <Box className="wrap-label">
+          <Box className={classes.noProduct}>
+            <Typography variant="h5" sx={{ textAlign: "center" }}>
+              {error.message}
+            </Typography>
+          </Box>
+        </Box>
+      ) : (
         <>
           <Breadcrumb path={"categoryProduct"} categoryId={categoryId} />
           <Box className="Main-category">
@@ -250,8 +258,27 @@ export default function CategoryProduct() {
                     <Box
                       className={`wrap-list-product ${classes.wrapListProduct}`}
                     >
-                      <ListProduct products={products} />
+                      {data?.products &&
+                        (data?.products.length > 0 ? (
+                          <ListProduct products={data.products} />
+                        ) : (
+                          <>
+                            <Box className={classes.noProduct}>
+                              <Typography
+                                variant="h5"
+                                sx={{ textAlign: "center" }}
+                              >
+                                Sản phẩm hiện đang cập nhật...
+                              </Typography>
+                            </Box>
+                          </>
+                        ))}
                     </Box>
+                    {isFetching && isLoading && (
+                      <Box className="loading">
+                        <Typography>Loading...</Typography>
+                      </Box>
+                    )}
                   </Box>
                 </Grid>
               </Grid>
@@ -269,15 +296,6 @@ export default function CategoryProduct() {
             </Box>
           </Box>
           <ArticleFeatured />
-        </>
-      ) : (
-        <>
-          <Breadcrumb path={"categoryProduct"} categoryId={categoryId} />
-          <Box className={classes.noProduct}>
-            <Typography variant="h5" sx={{ textAlign: "center" }}>
-              Sản phẩm hiện đang cập nhật...
-            </Typography>
-          </Box>
         </>
       )}
     </>

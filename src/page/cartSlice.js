@@ -180,7 +180,7 @@ const hanldeAddListCart = (state, Idproducts) => {
 };
 
 const cart = createSlice({
-  name: "rate",
+  name: "cart",
   initialState: initialState,
   reducers: {
     addCart: (state, action) => {

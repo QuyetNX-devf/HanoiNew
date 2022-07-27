@@ -8,9 +8,11 @@ import { Box, Link } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getArticle } from "utils/category";
 import { NavLink } from "react-router-dom";
 import { ToSlug } from "utils/format";
+import { useQuery, useQueryClient } from "react-query";
+import { getArticle } from "contants/api";
+import useLazyLoadGroup from "Hooks/useLazyLoadGroup";
 
 const useStyles = makeStyles((theme) => ({
   blockArticle: {
@@ -25,58 +27,67 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ArticleFeadture() {
-  const dataArticle = useSelector((state) => state.article);
-  const [articleFeatured, setArticleFeatured] = useState([]);
+  const { ref, scrollpoint } = useLazyLoadGroup();
+  const queryClient = useQueryClient();
+  const keys = queryClient.getQueryData("keys");
+  const key = ["article-featured", { type: "featured", limit: 3 }];
+
+  const { data: dataArticle } = useQuery({
+    queryKey: key,
+    queryFn: getArticle,
+    enabled: !!scrollpoint,
+    initialData: () => {
+      if (keys?.k2) {
+        const data = queryClient.getQueryData(keys.k2);
+        return data;
+      }
+    },
+    // initialDataUpdatedAt: 600,
+  });
+
   const classes = useStyles();
 
-  useEffect(() => {
-    const isArticle = getArticle({
-      type: "featured",
-      dataArticle: dataArticle,
-      limit: 3,
-    }).data;
-    console.log(isArticle);
-    setArticleFeatured(isArticle);
-  }, []);
-
   return (
-    <Box className={`block-article ${classes.blockArticle}`}>
+    <Box className={`block-article ${classes.blockArticle}`} ref={ref}>
       <Typography className="h-product" sx={{ marginBottom: "13px" }}>
         Tin nổi bật
       </Typography>
-      {articleFeatured.length > 0
-        ? articleFeatured.map((article, index) => (
-            <Link
-              to={`/tin-tuc/${ToSlug(article.title)}-${article.id}.html`}
-              component={NavLink}
-              key={index}
-            >
-              <Card
-                className={classes.card}
-                sx={{ width: "100%", marginBottom: "15px" }}
-              >
-                <CardMedia
-                  component="img"
-                  alt={article.title}
-                  height="200"
-                  image={article.articleDetail.image}
-                />
-                <CardContent>
-                  <Typography
-                    className="h2-product"
-                    gutterBottom
-                    component="div"
+      {dataArticle && dataArticle?.article.length > 0
+        ? dataArticle.article.map(
+            (article, index) =>
+              index < 3 && (
+                <Link
+                  to={`/tin-tuc/${ToSlug(article.title)}-${article.id}.html`}
+                  component={NavLink}
+                  key={index}
+                >
+                  <Card
+                    className={classes.card}
+                    sx={{ width: "100%", marginBottom: "15px" }}
                   >
-                    {article.title}
-                  </Typography>
-                  <Typography>{article.description}</Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Xem Thêm</Button>
-                </CardActions>
-              </Card>
-            </Link>
-          ))
+                    <CardMedia
+                      component="img"
+                      alt={article.title}
+                      height="200"
+                      image={article.articleDetail.image}
+                    />
+                    <CardContent>
+                      <Typography
+                        className="h2-product"
+                        gutterBottom
+                        component="div"
+                      >
+                        {article.title}
+                      </Typography>
+                      <Typography>{article.description}</Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button size="small">Xem Thêm</Button>
+                    </CardActions>
+                  </Card>
+                </Link>
+              )
+          )
         : ""}
     </Box>
   );

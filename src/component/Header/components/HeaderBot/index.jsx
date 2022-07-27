@@ -14,6 +14,8 @@ import { useEffect } from "react";
 import { getAllCategoryProduct } from "utils/category";
 import { useContext } from "react";
 import { BlurContext } from "component/Header";
+import { useQuery } from "react-query";
+import { getDataCategory } from "contants/api";
 
 const useStyles = makeStyles((theme) => ({
   buttonCategory: {
@@ -92,19 +94,13 @@ const ButtonSupport = (props) => {
 };
 
 export default function HeaderBot() {
-  const dataCategoryProduct = useSelector((state) => state.categoryProducts);
+  const dataCat = useSelector((state) => state.categoryProducts);
+
   let location = useLocation();
 
   const classes = useStyles();
 
   const context = useContext(BlurContext);
-
-  const [categoryProduct, setCategotyProduct] = useState([]);
-
-  useEffect(() => {
-    const data = getAllCategoryProduct({ data: dataCategoryProduct });
-    setCategotyProduct(data);
-  }, []);
 
   return (
     <Box className={`headerBot ${classes.headerBot}`}>
@@ -131,14 +127,14 @@ export default function HeaderBot() {
                 </Typography>
               </Box>
               {(context.hoverEnter || location.pathname === "/") &&
-                categoryProduct.length > 0 && (
+                dataCat.length > 0 && (
                   <Box
                     className={`wrap-list-category ${
                       location.pathname !== "/" && "no-home"
                     }`}
                   >
                     <Box className={`wrap-spacing ${classes.bgTheme}`}>
-                      {categoryProduct.map((category, lv1) => (
+                      {dataCat.map((category, lv1) => (
                         <Box
                           key={lv1}
                           className={`listItem ${

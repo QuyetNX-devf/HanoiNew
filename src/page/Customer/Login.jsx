@@ -6,14 +6,26 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Breadcrumb from "component/Breadcrumb";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import HelpIcon from "@mui/icons-material/Help";
+import SendIcon from "@mui/icons-material/Send";
 import "./index.scss";
 import { makeStyles } from "@mui/styles";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { useState } from "react";
+import { ENDPOINT } from "contants/api";
+import useGlobalState from "Hooks/useGlobalState";
+import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
+import axios from "axios";
+import UseAuthUser from "Hooks/useAuthUser";
+import LoginIcon from "@mui/icons-material/Login";
+import { setAUTH } from "page/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 const useStyles = makeStyles((theme) => ({
   titleBox: {
     color: theme.palette.secondary.main,
@@ -50,6 +62,19 @@ const validationSchema = yup.object({
 });
 export default function Login() {
   const classes = useStyles();
+  const authState = useSelector((state) => state.authLogin);
+  const { isAuthenticated, user } = authState;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/account");
+    }
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -58,13 +83,42 @@ export default function Login() {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       const register = {
-        email: values.email,
+        account: values.email,
         password: values.password,
       };
       console.log(register);
+      login(register);
       // resetForm();
     },
   });
+
+  const login = async (payload) => {
+    try {
+      setLoading(true);
+      const res = await axios.post(`${ENDPOINT}/auth/login`, payload);
+      if (res.data.success) {
+        setError(null);
+        localStorage.setItem("auth_token", res.data.accessToken);
+        dispatch(
+          setAUTH({
+            isAuthenticated: true,
+            user: null,
+          })
+        );
+        navigate("/account");
+      }
+    } catch (error) {
+      if (error.response.data) {
+        console.log(error.response.data.message);
+        setError(error.response.data.message);
+      } else {
+        setError("An error occurred, please try again");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box className="page-login">
       <Breadcrumb path="dang-nhap" namePage="Đăng nhập" />
@@ -126,14 +180,29 @@ export default function Login() {
                         formik.touched.password && formik.errors.password
                       }
                     />
-                    <Button
+                    {error && (
+                      <Box className="showError">
+                        <ReportGmailerrorredIcon fontSize="small" />
+                        {error}
+                      </Box>
+                    )}
+                    <LoadingButton
+                      loading={loading}
+                      loadingPosition="start"
+                      startIcon={<LoginIcon />}
                       type="submit"
                       variant="contained"
                       size="small"
-                      sx={{ fontSize: "14px !important" }}
+                      sx={{
+                        fontSize: "14px !important",
+                        "&.Mui-disabled": {
+                          backgroundColor: "white",
+                          color: "#000000a1",
+                        },
+                      }}
                     >
                       Đăng nhập
-                    </Button>
+                    </LoadingButton>
                   </form>
                 </Box>
               </Box>

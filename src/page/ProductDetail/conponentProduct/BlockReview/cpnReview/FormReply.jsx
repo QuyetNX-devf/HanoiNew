@@ -1,11 +1,13 @@
 import { Box, Button, Stack, TextField } from "@mui/material";
 import { useFormik } from "formik";
 import { replyReview } from "page/rateSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
 import * as yup from "yup";
 import styled from "@emotion/styled";
 import { makeStyles } from "@mui/styles";
+import { replyRate } from "contants/api";
+import { useMutation, useQueryClient } from "react-query";
 
 const validationSchema = yup.object({
   email: yup
@@ -58,19 +60,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormReply({ idReview, handleChangeExpanded }) {
+  const user = useSelector((state) => state.authLogin.user);
   const classes = useStyles();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+  const reply = useMutation((data) => replyRate(data), {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryHash.startsWith('["/rate"'),
+      }),
+  });
+
   const formik = useFormik({
     initialValues: {
-      email: "",
+      email: user ? user.email : "",
       comment: "",
-      name: "",
+      name: user ? user.userName : "",
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       const date = new Date().getTime();
       const itemReply = {
         id: _.uniqueId(),
+        idRate: idReview,
         item_type: "product",
         idProduct: "",
         people_like_count: "0",
@@ -88,8 +103,9 @@ export default function FormReply({ idReview, handleChangeExpanded }) {
         counter: 1,
       };
 
-      let action = replyReview({ idReview: idReview, reply: itemReply });
-      dispatch(action);
+      // let action = replyReview({ idReview: idReview, reply: itemReply });
+      // dispatch(action);
+      reply.mutate(itemReply);
       resetForm();
     },
   });

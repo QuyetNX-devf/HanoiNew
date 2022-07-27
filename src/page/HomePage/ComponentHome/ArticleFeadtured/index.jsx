@@ -5,8 +5,10 @@ import ArticleSlide from "../ArticleSlide";
 import { makeStyles } from "@mui/styles";
 import { memo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getArticle } from "utils/category";
 import { ToSlug } from "utils/format";
+import useLazyLoadGroup from "Hooks/useLazyLoadGroup";
+import { getArticle } from "contants/api";
+import { useQuery, useQueryClient } from "react-query";
 
 const useStyles = makeStyles((theme) => ({
   titleArticle: {
@@ -18,19 +20,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ArticleFeatured() {
-  const dataArticle = useSelector((state) => state.article);
-  const [articleFeatured, setArticleFeatured] = useState([]);
   const classes = useStyles();
-  useEffect(() => {
-    const isArticle = getArticle({
-      type: "featured",
-      dataArticle: dataArticle,
-      limit: 3,
-    }).data;
-    setArticleFeatured(isArticle);
-  }, []);
+  const { ref, scrollpoint } = useLazyLoadGroup();
+
+  const queryClient = useQueryClient();
+  const key = ["article-featured", { type: "featured", limit: 10 }];
+  queryClient.setQueryData("keys", { k1: "", k2: key });
+
+  const { data: dataArticle } = useQuery({
+    queryKey: key,
+    queryFn: getArticle,
+    enabled: !!scrollpoint,
+  });
+
   return (
-    <Box className={`block-articles ${classes.bgTheme}`}>
+    <Box className={`block-articles ${classes.bgTheme}`} ref={ref}>
       <Box className="wrap-label">
         <Box className="head-article">
           <Box className={`title-article ${classes.titleArticle}`}>
@@ -46,8 +50,8 @@ function ArticleFeatured() {
           </Link>
         </Box>
         <Box className="wrap-list">
-          {articleFeatured.length > 0 ? (
-            <ArticleSlide data={articleFeatured} />
+          {dataArticle?.article.length > 0 ? (
+            <ArticleSlide data={dataArticle.article} />
           ) : (
             ""
           )}

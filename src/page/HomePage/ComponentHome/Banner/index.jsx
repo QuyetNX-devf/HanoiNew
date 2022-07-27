@@ -55,7 +55,7 @@ export default function Banner() {
     }
   }, []);
 
-  console.log(resultApiBanner, "check banner home page");
+  // console.log(resultApiBanner, "check banner home page");
 
   const classes = useStyles();
 

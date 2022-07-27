@@ -13,6 +13,9 @@ import { addReview } from "page/rateSlice";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import styled from "@emotion/styled";
 import { makeStyles } from "@mui/styles";
+import { useMutation, useQueryClient } from "react-query";
+import { createRate } from "contants/api";
+import { useSelector } from "react-redux";
 
 const labels = {
   1: "Useless+",
@@ -84,16 +87,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ClientReview({ idProduct, handleExpanded }) {
+  const user = useSelector((state) => state.authLogin.user);
+  // console.log(user);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [valueStar, setValueStar] = useState(4);
   const [hover, setHover] = useState(-1);
 
+  const queryClient = useQueryClient();
+
+  const create = useMutation((data) => createRate(data), {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryHash.startsWith('["/rate"'),
+      }),
+  });
+
   const formik = useFormik({
     initialValues: {
-      email: "",
+      email: user ? user.email : "",
       comment: "",
-      name: "",
+      name: user ? user.userName : "",
       vote: valueStar,
     },
     validationSchema: validationSchema,
@@ -119,8 +136,9 @@ export default function ClientReview({ idProduct, handleExpanded }) {
         replies: [],
       };
       let action = addReview(itemRate);
-      console.log(itemRate);
-      dispatch(action);
+      // console.log(itemRate);
+      // dispatch(action);
+      create.mutate(itemRate);
       resetForm();
     },
   });

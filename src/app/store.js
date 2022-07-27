@@ -7,6 +7,7 @@ import rateReducer from "page/rateSlice";
 import cartReducer from "page/cartSlice";
 import BuildPcReducer from "page/builSlice";
 import categoryArticleReducer from "page/categoryArticleSlice";
+import authReducer from "page/authSlice";
 
 const rootDeducer = {
   categoryProducts: categoryProductReducer,
@@ -17,6 +18,7 @@ const rootDeducer = {
   cart: cartReducer,
   buildPc: BuildPcReducer,
   categoryArticle: categoryArticleReducer,
+  authLogin: authReducer,
 };
 
 const store = configureStore({

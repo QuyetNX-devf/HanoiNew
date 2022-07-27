@@ -1,4 +1,11 @@
-import { alpha, Box, InputBase, Link, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  CircularProgress,
+  InputBase,
+  Link,
+  Typography,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { NavLink, useNavigate } from "react-router-dom";
 import { formatCurrency } from "utils/formatNumBerPrice";
@@ -6,6 +13,8 @@ import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { sortPrice } from "utils/category";
 import { makeStyles } from "@mui/styles";
+import { useQuery } from "react-query";
+import { getProducts } from "contants/api";
 
 const useStyles = makeStyles((theme) => ({
   Search: {
@@ -57,10 +66,16 @@ export default function SearchProduct() {
   const classes = useStyles();
   const domain = "https://hanoinew.vn";
   const products = useSelector((state) => state.product);
-  const [dataSearch, setDataSearch] = useState([]);
+  // const [dataSearch, setDataSearch] = useState([]);
   const [keySearch, setKeySearch] = useState(null);
   const [activeBlur, setActiveBlur] = useState(false);
 
+  const { data, isFetching } = useQuery({
+    queryKey: ["search", { keySearch }],
+    queryFn: getProducts,
+    cacheTime: 0,
+    enabled: !!keySearch,
+  });
   // debounce search
   const typingTimeoutRef = useRef(null);
   const handleSearch = (e) => {
@@ -71,42 +86,41 @@ export default function SearchProduct() {
     if (value !== "") {
       typingTimeoutRef.current = setTimeout(() => {
         setKeySearch(value);
+        // refetch();
       }, 500);
     } else {
-      setDataSearch([]);
+      // setDataSearch([]);
       setKeySearch(null);
     }
   };
-
+  const dataSearch = data?.products;
   const onEnterSearch = (e) => {
-    if (e.keyCode === 13) {
-      setDataSearch([]);
-      setActiveBlur(false);
-      navigate(`/tim-kiem.html?q=${e.target.value}`);
-    }
+    setTimeout(() => {
+      if (e.keyCode === 13) {
+        setKeySearch(null);
+        setActiveBlur(false);
+        navigate(`/tim-kiem.html?q=${e.target.value}`);
+      }
+    }, 500);
   };
 
   const handleCloseBoxResult = () => {
     setActiveBlur(false);
-    setDataSearch([]);
+    setKeySearch(null);
   };
-  useEffect(() => {
-    if (keySearch) {
-      const getProduct = sortPrice({
-        listProduct: products,
-        page: 1,
-        keySearch: keySearch,
-        limit: 15,
-      }).data;
-      setDataSearch(getProduct);
-    }
-  }, [keySearch]);
+
   return (
     <Box className={classes.Search}>
       <Box>
         <Box className={classes.groupIp}>
           <Box className={classes.SearchIconWrap}>
-            <SearchIcon />
+            {isFetching ? (
+              <CircularProgress
+                sx={{ width: "27px !important", height: "27px !important" }}
+              />
+            ) : (
+              <SearchIcon />
+            )}
           </Box>
           <InputBase
             className={classes.StyledInputBase}
@@ -116,33 +130,37 @@ export default function SearchProduct() {
             onClick={() => setActiveBlur(true)}
           />
         </Box>
-        {dataSearch.length > 0 && (
+
+        {dataSearch && (
           <Box
             className={`box-insearch custom-scroll-bar ${classes.boxInsearch}`}
           >
-            {dataSearch.map((item, index) => (
-              <Link
-                key={index}
-                to={"#"}
-                component={NavLink}
-                className={"insearch_item"}
-              >
-                <Box className="left_img">
-                  <img
-                    src={domain + item.productImage.large}
-                    alt={item.productname}
-                  />
-                </Box>
-                <Box className="right_content">
-                  <Typography component={"span"} className="content_title">
-                    {item.productName}
-                  </Typography>
-                  <Typography component={"span"} className="content_price">
-                    {formatCurrency(item.price)} đ
-                  </Typography>
-                </Box>
-              </Link>
-            ))}
+            {dataSearch?.length > 0 &&
+              dataSearch.map((item, index) => (
+                <Link
+                  key={index}
+                  to={`/san-pham/${item.productName}-${item.id}.html`}
+                  component={NavLink}
+                  className={"insearch_item"}
+                  onClick={handleCloseBoxResult}
+                >
+                  <Box className="left_img">
+                    <img
+                      src={domain + item.productImage.large}
+                      alt={item.productname}
+                    />
+                  </Box>
+                  <Box className="right_content">
+                    <Typography component={"span"} className="content_title">
+                      {item.productName}
+                    </Typography>
+                    <Typography component={"span"} className="content_price">
+                      {formatCurrency(item.price)} đ
+                    </Typography>
+                  </Box>
+                </Link>
+              ))}
+            {dataSearch?.length === 0 && <Box>Không tìm thấy sản phẩm</Box>}
           </Box>
         )}
       </Box>

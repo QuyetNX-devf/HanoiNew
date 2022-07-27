@@ -29,7 +29,7 @@ export default function ListReview({ data }) {
       {data.map((itemReview, index) => (
         <Box className="review-item" key={index}>
           <Accordion
-            expanded={expanded === itemReview.id}
+            expanded={expanded === itemReview._id}
             sx={{ background: "none", boxShadow: "none" }}
           >
             <AccordionSummary
@@ -82,7 +82,7 @@ export default function ListReview({ data }) {
                       <Typography
                         variant="h7"
                         component={"span"}
-                        onClick={() => handleChangeExpanded(itemReview.id)}
+                        onClick={() => handleChangeExpanded(itemReview._id)}
                       >
                         Trả lời
                       </Typography>
@@ -130,7 +130,7 @@ export default function ListReview({ data }) {
             </AccordionSummary>
             <AccordionDetails>
               <FormReply
-                idReview={itemReview.id}
+                idReview={itemReview._id}
                 handleChangeExpanded={handleChangeExpanded}
               />
             </AccordionDetails>

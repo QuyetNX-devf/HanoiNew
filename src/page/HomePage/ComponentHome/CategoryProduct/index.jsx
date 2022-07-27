@@ -4,11 +4,15 @@ import { Box } from "@mui/system";
 import { NavLink } from "react-router-dom";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import { useSelector } from "react-redux";
-import _ from "lodash";
+import _, { entries } from "lodash";
 import ProductSlide from "../ProductSlide";
 import { useEffect, useState } from "react";
 import { sortPrice } from "utils/category";
 import { ToSlug } from "utils/format";
+import { useQuery } from "react-query";
+import { getProducts } from "contants/api";
+import { useRef } from "react";
+import useLazyLoadGroup from "Hooks/useLazyLoadGroup";
 
 const useStyles = makeStyles((theme) => ({
   headerNav: {
@@ -44,24 +48,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CategoryProduct(props) {
-  const products = useSelector((state) => state.product);
+  const { ref: anchorRef, scrollpoint } = useLazyLoadGroup();
 
   const { dataCat } = props;
-
-  const [resultProduct, setResultProduct] = useState([]);
-
-  useEffect(() => {
-    const data = sortPrice({
-      listProduct: products,
-      categoryId: dataCat.id,
-    }).data;
-    setResultProduct(data);
-  }, []);
+  const { data: dataProducts, isLoading } = useQuery({
+    queryKey: [`category-${dataCat.id}`, { categoryId: dataCat.id }],
+    queryFn: getProducts,
+    enabled: !!scrollpoint,
+  });
 
   const classes = useStyles();
 
   return (
-    <Box className={"block-pd-by-category"} component={"section"}>
+    <Box
+      className={"block-pd-by-category"}
+      component={"section"}
+      ref={anchorRef}
+    >
       <Box className={`wrap-label`}>
         <Box className={classes.wrapLabel}>
           <Box className={`header-nav ${classes.headerNav}`}>
@@ -108,7 +111,12 @@ export default function CategoryProduct(props) {
             </Link>
           </Box>
           <Box className={"wrap-pd"}>
-            {resultProduct.length > 0 && <ProductSlide data={resultProduct} />}
+            {!isLoading
+              ? dataProducts?.products &&
+                dataProducts?.products.length > 0 && (
+                  <ProductSlide data={dataProducts.products} />
+                )
+              : "loading..."}
           </Box>
         </Box>
       </Box>

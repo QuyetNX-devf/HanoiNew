@@ -7,14 +7,23 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import Breadcrumb from "component/Breadcrumb";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import HelpIcon from "@mui/icons-material/Help";
 import "./index.scss";
 import { makeStyles } from "@mui/styles";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import useGlobalState from "Hooks/useGlobalState";
+import { useEffect, useState } from "react";
+import { ENDPOINT } from "contants/api";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import { setAUTH } from "page/authSlice";
 const useStyles = makeStyles((theme) => ({
   titleBox: {
     color: theme.colorText.branding,
@@ -68,9 +77,24 @@ const validationSchema = yup.object({
     .min(10, "Bạn chưa nhập đúng địa chỉ")
     .required("Bạn chưa nhập địa chỉ"),
 });
+
 export default function Register() {
+  const authState = useSelector((state) => state.authLogin);
+  const { isAuthenticated, user } = authState;
+  const dispatch = useDispatch();
+
   const classes = useStyles();
   const isSmallerScreen = useMediaQuery("(max-width: 768px)");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/account");
+    }
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -83,16 +107,44 @@ export default function Register() {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       const register = {
-        email: values.email,
+        account: values.email,
         password: values.password,
-        name: values.name,
+        userName: values.name,
         phone: values.phone,
         address: values.address,
       };
       console.log(register);
-      // resetForm();
+      userRegister(register);
     },
   });
+
+  const userRegister = async (payload) => {
+    try {
+      setLoading(true);
+      const res = await axios.post(`${ENDPOINT}/auth/register`, payload);
+      if (res.data.success) {
+        setError(null);
+        localStorage.setItem("auth_token", res.data.accessToken);
+        dispatch(
+          setAUTH({
+            isAuthenticated: true,
+            user: null,
+          })
+        );
+        navigate("/account");
+      }
+    } catch (error) {
+      if (error.response.data) {
+        console.log(error.response.data.message);
+        setError(error.response.data.message);
+      } else {
+        setError("An error occurred, please try again");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box className="page-login">
       <Breadcrumb path="dang-ky" namePage="Đăng ký" />
@@ -177,17 +229,32 @@ export default function Register() {
                         formik.errors.confirmPassword
                       }
                     />
+                    {error && (
+                      <Box className="showError">
+                        <ReportGmailerrorredIcon fontSize="small" />
+                        {error}
+                      </Box>
+                    )}
                     {isSmallerScreen ? (
                       ""
                     ) : (
-                      <Button
+                      <LoadingButton
+                        loading={loading}
+                        loadingPosition="start"
+                        startIcon={<HowToRegIcon />}
                         type="submit"
                         variant="contained"
                         size="small"
-                        sx={{ fontSize: "14px !important" }}
+                        sx={{
+                          fontSize: "14px !important",
+                          "&.Mui-disabled": {
+                            backgroundColor: "white",
+                            color: "#000000a1",
+                          },
+                        }}
                       >
                         Đăng ký
-                      </Button>
+                      </LoadingButton>
                     )}
                   </Box>
                 </Box>

@@ -1,0 +1,37 @@
+.page-profile{
+    .wrap-profile{
+        padding: 0 15px;
+        .title-info{
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
+        .wrap-form{
+            .item-ip{
+                display: flex;
+                flex-wrap: wrap;
+                max-width: 600px;
+                margin-bottom: 15px;
+                .title-ip{
+                    width: 130px;
+                }
+                .left-ip{
+                    width: calc(100% - 130px);
+                }
+            }
+            .showError{
+                background: #f44336;
+                color: #fff;
+                padding: 7px 5px;
+                border-radius: 5px;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                max-width: 600px;
+                svg{
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}

@@ -26,14 +26,14 @@ const CategoryProduct = ({ categoryId }) => {
   const classes = useStyles();
   const dataCategoryProduct = useSelector((state) => state.categoryProducts);
   const [breadCrumb, setBreadCrumb] = useState([]);
-  console.log(categoryId);
+  // console.log(categoryId);
   useEffect(() => {
     const isBreadCrumb = getBreadcrumbsCategory(
       dataCategoryProduct,
       categoryId
     ).breadcrumbs;
     setBreadCrumb(isBreadCrumb);
-  }, [categoryId]);
+  }, [categoryId, dataCategoryProduct]);
   return (
     <>
       {breadCrumb.length > 0 && (

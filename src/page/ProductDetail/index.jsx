@@ -24,48 +24,45 @@ import fnRate from "utils/rateStart";
 import Offer from "./conponentProduct/Offer";
 import { useState } from "react";
 import { getProductById } from "utils/category";
+import { useQuery, useQueryClient } from "react-query";
+import { getProducts, getRate } from "contants/api";
+import LoadingPage from "component/Loading/LoadingPage";
 
 const useStyles = makeStyles((theme) => ({
   backgroundColor: {
     background: theme.backgroundColor.primary,
   },
 }));
+
 export default function ProductDetail() {
   const classes = useStyles();
   const navigate = useNavigate();
 
   const { productId, nameProduct } = useParams();
 
-  const listProduct = useSelector((state) => state.product);
+  const queryClient = useQueryClient();
 
-  //danh sách đánh giá cho sản phẩm hiện hành
-  const listReview = useSelector((state) =>
-    _.filter(state.rate, { idProduct: parseInt(productId) })
-  );
+  const { data, isFetching, isLoading } = useQuery({
+    queryKey: ["/product", { idProducts: productId }],
+    queryFn: getProducts,
+  });
 
-  //Thông tin sản phẩm hiện hành
-  const isProduct = _.find(listProduct, ["id", parseInt(productId)]);
+  console.log(isFetching, isLoading, "isFetching");
 
-  const rateStart = fnRate(listReview);
+  const { data: listReview } = useQuery({
+    queryKey: ["/rate", "key2"],
+    queryFn: () => getRate({ idProduct: productId }),
+  });
 
-  // check id product
-  useEffect(() => {
-    if (!isProduct || nameProduct !== ToSlug(isProduct.productName)) {
-      navigate("/");
-    }
-  }, []);
+  // console.log(listReview, "check listReview");
 
-  const [product, setProduct] = useState(null);
+  const rateStart = listReview && fnRate(listReview);
 
-  useEffect(() => {
-    const isProduct = getProductById({
-      data: listProduct,
-      idProduct: +productId,
-    });
-    setProduct(isProduct);
-  }, [productId]);
-
-  return product ? (
+  const product = data?.products[0];
+  console.log(product, "check data product");
+  return isLoading ? (
+    <LoadingPage />
+  ) : data ? (
     <Box className="main-product">
       <Breadcrumb path={"product"} product={product} />
       <Box className="pd-main-top" component={"section"}>
@@ -133,10 +130,17 @@ export default function ProductDetail() {
               <Grid item xs={12} mmd={8}>
                 <Box className={`block-left`}>
                   <Describe />
-                  <Box className={`group-review ${classes.backgroundColor}`}>
-                    <BlockReview idProduct={productId} rateStart={rateStart} />
-                    {listReview.length > 0 && <ListReview data={listReview} />}
-                  </Box>
+                  {listReview && (
+                    <Box className={`group-review ${classes.backgroundColor}`}>
+                      <BlockReview
+                        idProduct={productId}
+                        rateStart={rateStart}
+                      />
+                      {listReview.length > 0 && (
+                        <ListReview data={listReview} />
+                      )}
+                    </Box>
+                  )}
                 </Box>
               </Grid>
               <Grid item xs={12} mmd={4}>

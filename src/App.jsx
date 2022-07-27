@@ -28,13 +28,36 @@ import Mien_phi_van_chuyen from "page/Static/Mien_phi_van_chuyen";
 import HeaderMobile from "component/HeaderMobie";
 import { ThemeContext, ThemeProviderContext } from "context/ThemeContext";
 import { useContext } from "react";
+import Account from "page/Account";
+import useAuthUser from "Hooks/useAuthUser";
+import ChangePassword from "page/Account/ChangePassword";
+import { useQuery, useQueryClient } from "react-query";
+import { addCategory } from "page/categoryProductSlice";
+import { getDataCategory } from "contants/api";
 
 function App() {
-  const isSmallerScreen = useMediaQuery("(max-width: 1024px)");
-  const categoryProducts = useSelector((state) => state.categoryProducts);
-  let location = useLocation();
-  // console.log(location, "check location");
+  //check user login
+  useAuthUser();
+
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+  const key = "getCategory";
+  // queryClient.setQueryData("keys", { k1: key, k2: "" });
+
+  const { data: dataCat } = useQuery({
+    queryKey: key,
+    queryFn: getDataCategory,
+  });
+
+  useEffect(() => {
+    if (dataCat) {
+      dispatch(addCategory(dataCat));
+    }
+  }, [dataCat]);
+
+  const isSmallerScreen = useMediaQuery("(max-width: 1024px)");
+  let location = useLocation();
+
   useEffect(() => {
     if (window.localStorage.getItem("listIdProduct")) {
       const localIdProduct = JSON.parse(
@@ -76,6 +99,9 @@ function App() {
             path="/tin-tuc/:nameArtice-:articleId.html"
             element={<ArticleDetail />}
           />
+          <Route path="/account" element={<Account />} />
+          <Route path="/account/change-password" element={<ChangePassword />} />
+
           <Route path="/gia-uu-dai.html" element={<Gia_uu_dai />} />
           <Route path="/ho-tro-tra-gop.html" element={<Ho_tro_tra_gop />} />
           <Route path="/bao-hanh-tan-nha.html" element={<Bao_hanh_tan_nha />} />

@@ -10,31 +10,17 @@ import { getListCategoryProduct } from "utils/category";
 import { useEffect, useState } from "react";
 export default function HomePage() {
   const dataCategoryProduct = useSelector((state) => state.categoryProducts);
-  const dataArticle = useSelector((state) => state.article);
-  const [resultCat, setResultCat] = useState([]);
-  let articleFeatured = _.filter(dataArticle, {
-    articleDetail: { isFeatured: 1 },
-  });
-
-  useEffect(() => {
-    const apiCategory = getListCategoryProduct({
-      data: dataCategoryProduct,
-      type: "featured",
-    });
-    setResultCat(apiCategory);
-  }, []);
-
   return (
     <Box>
       <Banner />
-      {resultCat.length > 0 &&
-        resultCat.map(
+      {dataCategoryProduct.length > 0 &&
+        dataCategoryProduct.map(
           (category, index) =>
             category.isFeatured === 1 && (
               <CategoryProduct dataCat={category} key={index} />
             )
         )}
-      <ArticleFeatured />
+      {dataCategoryProduct.length > 0 && <ArticleFeatured />}
     </Box>
   );
 }

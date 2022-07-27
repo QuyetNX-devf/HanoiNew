@@ -1,0 +1,69 @@
+@import "mixin.scss";
+.page-acc{
+    .loading{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 500px;
+    }
+    .wrap-ct{
+        display: flex;
+        flex-wrap: wrap;
+        .left-acc{
+            width: calc((100% - 15px) / 5);
+            margin-right: 15px;
+            padding: 15px 10px;
+            border-radius: 5px;
+            .name-acc{
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                margin-bottom: 15px;
+                .left-img{
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 50%;
+                    position: relative;
+                    overflow: hidden;
+                    img{
+                        @include objectFitImg;
+                    }
+                }
+                .right-text{
+                    width: calc(100% - 45px);
+                    padding-left: 10px;
+                    .nameuser{
+                        font-weight: 500;
+                    }
+                }
+            }
+            .wrap-nav{
+                .link-nav{
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    padding: 5px;
+                    margin-bottom: 5px;
+                    border-radius: 5px;
+                    &.active{
+                        background: #155aa4;
+                        color: #fff;
+                    }
+                    .icon{
+                        width: 25px;
+                        display: flex;
+                    }
+                    .text{
+                        width: calc(100% - 25px);
+                    }
+                }
+            }
+        }
+        .right-acc{
+            width: calc((100% - 15px) / 5 * 4);
+            padding: 15px 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+    }
+}
